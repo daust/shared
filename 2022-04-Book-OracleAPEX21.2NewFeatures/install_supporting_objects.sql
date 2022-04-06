@@ -1,15 +1,3 @@
-/*
-  This script will install the required objects and seed data for the Book: 
-  
-    Oracle Application Express 21.2 New Features by Dietmar Aust. 
-
-  First, you need to install the Sample Data Set "HR Data". These are the well-known OEHR_* tables. 
-    - Navigate to SQL Workshop > Utilities > Sample Data Sets
-    - Click on "Install" for Data Set: "HR Data"	(The generic HR tables commonly used by Oracle Education)
-
-  Next, run this script to add additional columns and views to the original data model. 
-*/
-
 Rem
 Rem  add-geometry-column-to-oehr_customers.sql
 Rem
