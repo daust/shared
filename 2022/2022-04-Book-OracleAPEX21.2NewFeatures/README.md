@@ -4,7 +4,8 @@ This is additional material for the book "Oracle Application Express 21.2 New Fe
 
 The examples in the book are based on the well-known ``OEHR_*`` data model which is commonly used by Oracle Education. 
 
-First, you need to install the Sample Data Set "HR Data" in our database schema. These are the well-known ``OEHR_*`` tables:
+First, you need to install the Sample Data Set "HR Data" in our database schema. These are the well-known ``OEHR_*`` tables.
+- Log in to your APEX Workspace
 - Navigate to SQL Workshop > Utilities > Sample Data Sets
 - Click on "Install" for Data Set: "HR Data" (The generic HR tables commonly used by Oracle Education)
 
@@ -18,6 +19,7 @@ This will:
 
 In order to remove the sample objects again from your schema: 
 - Run the script ``deinstall_supporting_objects.sql`` (located in this directory) in your database schema.
+- Log in to your APEX Workspace
 - Navigate to SQL Workshop > Utilities > Sample Data Sets
     - Click on ``Update`` and then on ``Remove Dataset``
 
