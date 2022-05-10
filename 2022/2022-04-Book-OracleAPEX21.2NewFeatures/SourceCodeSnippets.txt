@@ -1,0 +1,677 @@
+Dear Reader, 
+
+for your convenience, you will find the source code snippets and links used 
+throughout the book here. This way, you can simply use them via copy/paste 
+and don't have to type them manually. 
+
+Enjoy
+~Dietmar
+
+-----------------------------------------------------------------------------
+-- Chapter 1: Introduction
+-----------------------------------------------------------------------------
+--
+-- Acknowledgements
+--
+Official Oracle APEX Documentation
+
+https://docs.oracle.com/en/database/oracle/application-express/21.2/htmdb/changes-in-this-release.html
+https://apex.oracle.com/en/platform/features/whats-new-212/ 
+https://docs.oracle.com/en/database/oracle/application-express/21.2/aexjs/index.html (JavaScript API)
+https://docs.oracle.com/en/database/oracle/application-express/21.2/aeapi/index.html (PL/SQL API)
+https://docs.oracle.com/en/database/oracle/application-express/21.2/htmrn/index.html (Release Notes)
+
+Blog Posts by APEX Team Members
+
+https://hardlikesoftware.com/weblog/2021/10/11/apex-21-2-new-javascript-apis-joelkallmanday/ (John Snyders)
+https://blog.danielhochleitner.de/2021/10/11/new-apex-date-js-api-in-apex-21-2/ (Daniel Hochleitner)
+https://stefandobre.com/2021/10/11/javascript-api-enhancements-in-apex-21-2-joelkallmanday/ (Stefan Dobre)
+Oracle APEX 21.2 New Features presented by the Oracle APEX Team – Part 1: https://www.youtube.com/watch?v=qcg6GZw68mA
+Oracle APEX 21.2 New Features presented by the Oracle APEX Team – Part 2: https://www.youtube.com/watch?v=9Wt2QtM6SDk 
+https://blogs.oracle.com/apex/post/whats-new-for-report-regions-apex-212 (Monica Godoy)
+Oracle APEX 21.2 YouTube Videos provided by the Oracle APEX Team: https://www.youtube.com/playlist?list=PLUo-NIMouZ_veS7gJqhxJgchBtWz9D6xY 
+https://diveintoapex.com/2021/12/12/capturing-lat-long-address-info-without-a-map/ (Steve Muench)
+
+Other Sources
+
+https://apexdiff.foex.at/
+https://www.insum.ca/apex-21-2-new-features/ (Michelle Skamene from Insum Solutions Inc.)
+
+--
+-- Code Downloads and Errata
+--
+https://dietmaraust.com/books/apex-new-features-21-2
+
+--
+-- The Sample Application
+--
+https://dietmaraust.com/books/apex-new-features-21-2
+
+--
+-- Other Sample Applications from Oracle
+--
+https://oracle.github.io/apex/
+https://github.com/oracle/apex
+
+-----------------------------------------------------------------------------
+-- Chapter 2: Installation
+-----------------------------------------------------------------------------
+--
+-- Installation of Oracle APEX 21.2
+--
+https://docs.oracle.com/en/database/oracle/application-express/21.2/htmig/index.html
+https://docs.oracle.com/en/database/oracle/application-express/21.2/htmig/cleaning-up-after-failed-installation.html
+
+APEX 21.1: Patch Number 32598392
+APEX 21.2: Patch Number 33420059
+
+https://www.oracle.com/tools/downloads/apex-211-downloads.html
+
+SQL> select * from apex_release;
+
+SQL> select patch_number, patch_version, installed_on 
+  2*   from apex_patches order by installed_on desc;
+
+-----------------------------------------------------------------------------
+-- Chapter 3: Preparation
+-----------------------------------------------------------------------------
+--
+-- Required Database Objects / Sample Data for the Book
+--
+https://dietmaraust.com/books/apex-new-features-21-2
+
+--
+-- Creating Your Demo Application
+--
+APEX 21.2 New Features
+
+REGION_ID
+
+select region_name d,
+       region_id r
+  from oehr_regions
+ order by 1
+
+-----------------------------------------------------------------------------
+-- Chapter 4: Application Building
+-----------------------------------------------------------------------------
+--
+-- Progressive Web Apps (PWA)
+--
+https://web.dev/pwa-checklist/
+
+App Description: This is the locally installed PWA for the Oracle APEX New Features Application 21.2.
+Theme Color: #2fbfbc
+Background Color: #2fbfbc
+Icon URL: #APP_FILES#app-icon.svg
+
+chrome://apps/ 
+
+--
+-- Smart Filters
+--
+OEHR_CUSTOMERS_RL_V
+
+--
+-- UI-Design, Themes and Templates
+--
+select application_id, 
+            theme_name,
+            file_prefix from apex_application_themes
+
+select application_id, 
+       application_name, 
+       workspace,
+       file_prefix from apex_application_themes
+ where theme_internal_name='UNIVERSAL_THEME'
+   and instr(file_prefix, '21.2')=0 ;
+
+https://apex.oracle.com/pls/apex/r/apex_pm/ut/migration-guide
+
+P3_AFTER_LOGO
+P3_BEFORE_NAVIGATION_BAR
+P3_AFTER_NAVIGATION_BAR
+
+--
+-- Drawers
+--
+apex.theme.closeRegion( "DRAWER_REGION_ID" );
+apex.theme.openRegion( "DRAWER_REGION_ID" );
+
+--
+-- Updated Reference App
+--
+https://apex.oracle.com/ut 
+https://apex.oracle.com/pls/apex/apex_pm/r/ut/css-variables
+
+--
+-- Updated Alert and Confirm Dialogs
+--
+https://docs.oracle.com/en/database/oracle/application-express/21.2/htmdb/using-template-directives.html
+https://docs.oracle.com/en/database/oracle/application-express/21.2/aexjs/apex.util.html#.applyTemplate 
+
+<div id="messageFormat">
+
+    <p>Do you confirm the order number <b>&P7_ORDER_NUMBER.</b> 
+       for customer <b>&P7_CUSTOMER_NAME.</b>?</p>
+
+    {if P7_CUSTOMER_TAGS/}
+      <p>The customer TAGs are: </p>
+      <ul class="tags">
+      {loop "," P7_CUSTOMER_TAGS/}
+        <li id="didi" class="tag-item">&APEX$I.: &APEX$ITEM.</li>
+      {endloop/}</ul>
+    {else/}
+      <p>No customer TAGs available.</p>
+    {endif/}
+
+</div>
+
+--
+-- Geocoding, Map and Spatial Enhancements
+--
+https://elocation.oracle.com/
+https://www.here.com/ 
+
+select cust.CUSTOMER_ID,
+       cust.CUST_FIRST_NAME,
+       cust.CUST_LAST_NAME,
+       cust.STREET_ADDRESS,
+       cust.POSTAL_CODE,
+       cust.CITY,
+       cust.COUNTRY_ID,
+       cust.PHONE_NUMBER,
+       cust.GEOMETRY,
+       cust.geometry.sdo_point.x as x,
+       cust.geometry.sdo_point.y as y
+  from OEHR_CUSTOMERS cust
+
+--
+-- New jQuery UI Widget to Display Maps Inline
+--
+*) Create a miniMap with JavaScript
+
+#APEX_FILES#libraries/apex/#MIN_DIRECTORY#widget.miniMap#MIN#.js
+
+Display Mini Map with minial markup and JS initialization. 
+<div id="inlineMap1" style="width:100%; height:600px;"></div>
+
+$("#inlineMap1").miniMap({
+    center: [-122.26516, 37.52938],
+    background: "osm-bright",
+    zoom: 5,
+    marker: true,
+    markerColor: "red",
+    controls: true,
+    interactive: true,
+    tooltip: "Oracle Redwood Shores"
+});
+
+*) Create minMap through HTML Markup (DIV) and Data Elements
+
+#APEX_FILES#libraries/apex/#MIN_DIRECTORY#widget.miniMap#MIN#.js
+
+Display Mini Map with DIV and data elements. 
+<div id="inlineMap2"
+    data-center="[-122.26516, 37.52938]"
+    data-background="osm-bright"
+    data-zoom="12"
+    data-marker="true"
+    data-marker-color="red"
+    data-controls="true"
+    data-interactive="true"
+    data-tooltip="Oracle Redwood Shores"
+    style="width:100%;height:600px;">
+</div>
+
+$("#inlineMap2").miniMap();
+
+*) Displaying miniMap Inline in Card Regions
+
+#APEX_FILES#libraries/apex/#MIN_DIRECTORY#widget.miniMap#MIN#.js
+
+select CUSTOMER_ID id,
+       CUST_FIRST_NAME || ', ' 
+                       || CUST_LAST_NAME 
+                       || '(' || city ||')' as title,
+       m.geometry.sdo_point.x longitude,
+       m.geometry.sdo_point.y latitude
+from OEHR_CUSTOMERS m
+-- display only valid addresses, else we will get JavaScript errors
+where m.geometry.sdo_point.x is not null
+
+<div class="miniMap" id="map&ID."
+    data-center="[&LONGITUDE.,&LATITUDE.]"
+    data-zoom="3"
+    data-marker="true"
+    data-marker-color="var(--ut-palette-primary, #006BD8)"
+    data-interactive="false"
+    style="width:100%;height:200px">
+</div>
+
+$(".miniMap").miniMap();
+
+--
+-- Improved Editors
+--
+https://microsoft.github.io/monaco-editor/index.html
+https://lesscss.org/ 
+
+--
+-- Email and Email Template Enhancements
+--
+-- first sending the email in English
+apex_mail.send (
+    p_to                 => '<email address>',
+    p_template_static_id => 'SCHEDULED_OUTAGE',
+    p_placeholders       => '{' ||
+    ' "SERVICE_USER":'        || apex_json.stringify( :app_user ) ||
+    ',"SERVICE_NAME":'        || apex_json.stringify( 'Sample Application') ||
+    ',"OUTAGE_REASON":'       || apex_json.stringify( 'Maintenance' ) ||
+    ',"MY_APPLICATION_LINK":' || apex_json.stringify( apex_mail.get_instance_url 
+                                    || apex_page.get_url( :app_page_id )) ||
+    '}' ,
+    p_language_override  => 'en');
+
+-- now sending the email in German
+apex_mail.send (
+    p_to                 => '<email address>',
+    p_template_static_id => 'SCHEDULED_OUTAGE',
+    p_placeholders       => '{' ||
+    ' "SERVICE_USER":'        || apex_json.stringify( :app_user ) ||
+    ',"SERVICE_NAME":'        || apex_json.stringify( 'Demo Applikation' ) ||
+    ',"OUTAGE_REASON":'       || apex_json.stringify( 'Wartung' ) ||
+    ',"MY_APPLICATION_LINK":' || apex_json.stringify( apex_mail.get_instance_url 
+                                    || apex_page.get_url( :app_page_id )) ||
+    '}' ,
+    p_language_override  => 'de');
+
+APEX_MAIL.PUSH_QUEUE;
+
+*) Inline Email Attachments
+
+-- Example:
+-- This example shows how to attach a file inline, by using a content identifier,
+-- and how to refer to that attachment in the HTML of the email.
+--
+-- Example:
+declare
+  l_id         number;
+  l_body       clob;
+  l_body_html  clob;
+  l_content_id varchar2(100) := 'my-inline-image';
+  l_filename   varchar2(100);
+  l_mime_type  varchar2(100);
+  l_image      blob;
+begin
+  l_body := 'To view the content of this message, please use an HTML ' ||
+            'enabled mail client.' || utl_tcp.crlf;
+
+  l_body_html := '<html><body>' || utl_tcp.crlf ||
+                 '<p>Here is the image you requested.</p>' || utl_tcp.crlf ||
+                 '<p><img src="cid:' || l_content_id || '" alt="Requested Image"></p>' ||
+                 utl_tcp.crlf ||
+                 '<p>Thanks,<br />' || utl_tcp.crlf ||
+                 'The Application Express Dev Team<br />' || utl_tcp.crlf ||
+                 '</body></html>';
+
+  l_id := apex_mail.send (
+    p_to        => 'some_user@somewhere.com',   -- change to your email address
+    p_from      => 'some_sender@somewhere.com', -- change to a real senders email address
+    p_body      => l_body,
+    p_body_html => l_body_html,
+    p_subj      => 'Requested Image' );
+
+  select filename,   mime_type,   blob_content
+    into l_filename, l_mime_type, l_image
+    from apex_application_files
+   where id = 123;
+
+  apex_mail.add_attachment(
+    p_mail_id    => l_id,
+    p_attachment => l_image,
+    p_filename   => l_filename,
+    p_mime_type  => l_mime_type,
+    p_content_id => l_content_id );
+  commit;
+end;
+/
+
+--
+-- Dynamic Actions: New Modal Dialog Event
+--
+console.log("dialog closed or canceled");
+console.log(this.data);
+
+if (this.data.closeAction=="cancel")
+    alert("Dialog closed with action: CANCEL");
+
+if (this.data.closeAction=="close")
+    alert("Dialog closed with action: CLOSE");
+
+-----------------------------------------------------------------------------
+-- Chapter 5: Integration
+-----------------------------------------------------------------------------
+--
+-- REST Source Catalog
+--
+https://fuzziebrain.com/content/id/1720/
+https://dietmaraust.com/books/apex-new-features-21-2
+
+--
+-- REST pagination enhancement
+--
+https://docs.github.com/en/rest/overview/resources-in-the-rest-api#detailed-representations
+$ curl 'https://api.github.com/user/repos?page=2&per_page=100'
+
+-----------------------------------------------------------------------------
+-- Chapter 6: Administration
+-----------------------------------------------------------------------------
+--
+-- Environment Banners (Workspace Administration)
+--
+select 1
+from apex_workspaces
+where workspace_banner_label = 'TEST'
+
+select workspace, workspace_banner_yn, workspace_banner_label, workspace_banner_color, workspace_banner_pos from apex_workspaces;
+
+-----------------------------------------------------------------------------
+-- Chapter 7: APIs
+-----------------------------------------------------------------------------
+https://apexdiff.foex.at/
+
+--
+-- Javascript APIs
+--
+https://docs.oracle.com/en/database/oracle/application-express/21.2/aexjs/index.html
+https://apex.oracle.com/jsapi 
+https://apex.oracle.com/shortcuts
+
+--
+-- A new Direction for Region and Item APIs
+--
+https://hardlikesoftware.com/weblog/2021/10/11/apex-21-2-new-javascript-apis-joelkallmanday/
+
+--
+-- apex
+--
+// list all page items, their values and their type
+Object.entries(apex.items).forEach(([key, item]) => {
+    console.log("key: " + key, "; value=" + item.getValue(), "; type=" + item.item_type);
+});
+
+// getting an item's value:
+var sal = apex.item("P1_SAL").getValue();
+
+// is the same as
+var sal = apex.items.P1_SAL.getValue();
+
+// is the same as
+var sal = apex.items.P1_SAL.value;
+
+// setting an item's value:
+apex.item("P1_SAL").setValue(100);
+
+// is the same as
+apex.items.P1_SAL.setValue(100);
+
+// is the same as
+apex.items.P1_SAL.value = 100;
+
+--
+-- apex.regions
+--
+Object.values( apex.regions )
+.filter( region => region.type === "InteractiveGrid" )
+.forEach( region => region.refresh() );
+
+--
+-- apex.date
+--
+apex.date.add( new Date(), 2, apex.date.UNIT.DAY );
+
+var myDate = new Date( "2022-03-17" );
+
+// adds two days to the current date/time
+apex.date.add( myDate, 2, apex.date.UNIT.DAY );
+=> output: Sat Mar 19 2022 01:00:00 GMT+0100 (Mitteleuropäische Normalzeit)
+
+// adds 1 year to the current date/time
+apex.date.add( myDate, 1, apex.date.UNIT.YEAR );
+=> output: Sun Mar 19 2023 01:00:00 GMT+0100 (Mitteleuropäische Normalzeit)
+
+// substracts 30 minutes from the current date/time
+apex.date.subtract( myDate, 30, apex.date.UNIT.MINUTE );
+=> output: Sun Mar 19 2023 00:30:00 GMT+0100 (Mitteleuropäische Normalzeit)
+
+// subtracts 6 hours from the current date/time
+apex.date.subtract( myDate, 6, apex.date.UNIT.HOUR );
+
+// adds 2 days to the current date/time
+myDate = apex.date.add( myDate, 2, apex.date.UNIT.DAY );
+
+// returns the day of the the week 
+apex.date.dayOfWeek( new Date( "2021-06-20" ) );
+=> output: 4
+
+// returns the number of days in a given month
+apex.date.daysInMonth( myDate );
+=> output: 31
+
+// Returns the end date of a given day.
+apex.date.endOfDay( myDate );
+=> output: Sun Mar 19 2023 23:59:59 GMT+0100 (Mitteleuropäische Normalzeit)
+
+// Returns the first day of the month for the given month
+apex.date.firstOfMonth( myDate );
+=> output: Wed Mar 01 2023 00:00:00 GMT+0100 (Mitteleuropäische Normalzeit)
+
+// Date formatting routines
+var dateString = apex.date.format( myDate, "YYYY-MM-DD HH24:MI" );
+// output: 2022-03-17 01:00
+
+var dateString = apex.date.format( myDate, "Day, DD Month YYYY" );
+// output: Thursday, 17 March 2022
+
+var dateString = apex.date.format( myDate, "Day, DD Month YYYY", "de" );
+// output: Donnerstag, 17 März 2022
+
+.... and many others
+
+--
+-- Region Interface mapRegion
+--
+apex.region( "regionId" ).setZoomLevel( 3 );
+
+--
+-- Item Interface colorPickerItem
+--
+apex.items.P5_COLOR.contrastWith("#6767ea");
+=> output: 
+  {aa_large: true,
+   aa_small: false, 
+   aaa_large: false,
+   aaa_small: false,
+   color_1: "rgb(246, 246, 247)",
+   color_2: "rgb(103, 103, 234)",
+   ratio: 4.132689807871273}
+
+apex.items.P5_COLOR.getNativeValue();
+=> output: 
+  { _a: 1,
+    _b: 247, 
+    _g: 246,
+    _r: 246}
+
+--
+-- Item Interface numberFieldItem
+--
+// returns the number value as string
+apex.items.P6_NUMBER.getValue();
+=> output: '1.22'
+
+// returns the number value as a native number value
+apex.items.P6_NUMBER.getNativeValue();
+=> output: 1.22
+
+--
+-- APEX_CREDENTIAL
+--
+BEGIN
+  -- Set the workspace, we always need to do this first
+  apex_util.set_workspace(p_workspace => 'DEMO');
+   
+  -- Use Case 1: Updating client_id and client_secret for an 
+  --             existing credential
+  apex_credential.set_persistent_credentials(
+      p_credential_static_id  => 'YELP_CREDENTIALS',
+      p_client_id             => 'Authorization',
+      p_client_secret         => 'Bearer <Yelp client secret>' );
+
+  -- Use Case 2: Removing an existing credential
+  apex_credential.drop_credential(p_credential_static_id=> 'YELP_CREDENTIALS' );
+   
+  -- Use Case 3: Creating a new credential
+  apex_credential.create_credential (
+     p_credential_name       => 'YELP Credentials',
+     p_credential_static_id  => 'YELP_CREDENTIALS',
+     p_authentication_type   => apex_credential.C_TYPE_HTTP_HEADER,
+     p_allowed_urls          => apex_t_varchar2(
+                                'https://api.yelp.com/v3/businesses/search' ),
+     p_prompt_on_install     => true,
+     p_credential_comment    => 'Login to the YELP API' );
+  
+  -- after the creation of the credential, we still have to set 
+  -- the actual client_id and client_secret
+  apex_credential.set_persistent_credentials(
+      p_credential_static_id  => 'YELP_CREDENTIALS',
+      p_client_id             => 'Authorization',
+      p_client_secret         => 'Bearer <Yelp client secret>' );
+   
+   commit;
+END;
+/
+
+--
+-- APEX_DATA_INSTALL
+--
+DECLARE
+    l_table_name    varchar2(400);
+BEGIN
+   apex_data_install.load_supporting_object_data(
+       p_table_name            => l_table_name,
+       p_delete_after_install  => true);
+END;
+
+--
+-- APEX_DATA_LOADING
+--
+select p.line_number,
+    p.col001, p.col002, p.col003, p.col004, p.col005, p.col006, p.col007, p.col008, p.col009, p.col010
+    from apex_application_temp_files f,
+             table( apex_data_parser.parse(
+                  p_content       =>  f.blob_content,
+                  p_file_name     =>  f.filename,
+                  p_file_profile  =>  apex_data_loading.get_file_profile( 
+                                          p_static_id => 'my-load-definition'),
+                  p_max_rows      =>  100 ) )
+    p where f.name = :P1_FILE;
+
+--
+-- APEX_DEBUG
+--
+-- example using: 
+--     page_view_id: 35838
+--     message_id  : 35838138
+--
+select decode(id,35838138, 'x') curr, 
+       to_char(message_timestamp, 'dd.mm.yyyy hh24:mi:ss') msg_timestamp, 
+       application_id,
+       page_id,
+       session_id,
+       apex_user,
+       message_level,
+       call_stack,
+       message
+  from apex_debug_messages d
+ where page_view_id=35838
+ order by id;
+
+--
+-- APEX_EXPORT
+--
+DECLARE
+   l_zip blob;
+   l_info apex_application_install.t_file_info;
+BEGIN
+   l_zip := apex_web_service.make_rest_request_b (
+                p_url => 'https://www.example.com/apps/f100.zip',
+                p_http_method => 'GET' );
+   l_info := apex_application_install.get_info (
+                   p_source => apex_export.unzip (
+                       p_source_zip => l_zip ) );
+
+   sys.dbms_output.put_line (
+       apex_string.format (
+           p_message => q'~
+                        !Type ................. %0
+                        !App Name ............. %1
+                        !~',
+           p0 => l_info.file_type,
+           p1 => l_info.app_name,
+           p_prefix => '!' ));
+END;
+
+--
+-- Data Dictionary Views
+--
+-- Show all columns of the data dictionary view APEX_APPLICATIONS
+SELECT *
+  FROM apex_dictionary 
+ WHERE apex_view_name = 'APEX_APPLICATIONS'
+ ORDER BY column_id;
+
+-- Show only the description of the view itself, a.k.a. the table/view comment:
+SELECT *
+  FROM apex_dictionary 
+ WHERE apex_view_name = 'APEX_APPLICATIONS'
+   AND column_id=0;
+
+-----------------------------------------------------------------------------
+-- Chapter 8: Release Notes
+-----------------------------------------------------------------------------
+21.2: https://docs.oracle.com/en/database/oracle/application-express/21.2/htmrn/index.html
+21.1: https://docs.oracle.com/en/database/oracle/application-express/21.1/htmrn/index.html
+
+--
+-- Compatibility Mode
+--
+select workspace, 
+       application_id, 
+       application_name, 
+       compatibility_mode 
+  from apex_applications
+ order by 1,2;
+
+--
+-- Open Bugs and Known Issues
+--
+https://docs.oracle.com/en/database/oracle/application-express/21.2/htmrn/index.html
+https://www.oracle.com/tools/downloads/apex-downloads/apex-212-known-issues.html
+
+-----------------------------------------------------------------------------
+-- Chapter 9: Diving Deeper into Oracle APEX
+-----------------------------------------------------------------------------
+https://dietmaraust.com/books/apex-new-features-21-2
+https://dietmaraust.com/training
+
+--
+-- About the Author
+--
+https://dietmaraust.com
+https://linkedin.com/in/oracleapexexpert/
+https://twitter.com/daust_de
+dietmar.aust@opal-consulting.de
+www.opal-consulting.de
+
