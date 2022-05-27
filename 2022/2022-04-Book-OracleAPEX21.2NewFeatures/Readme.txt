@@ -1,5 +1,7 @@
 # Installation of Sample Objects
 
+test
+
 This is additional material for the book "Oracle Application Express 21.2 New Features" (by Dietmar Aust).
 
 The examples in the book are based on the well-known ``OEHR_*`` data model which is commonly used by Oracle Education. 
